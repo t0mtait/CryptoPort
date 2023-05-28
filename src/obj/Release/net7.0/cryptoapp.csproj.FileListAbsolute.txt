@@ -1,0 +1,15 @@
+/Users/tomtait/Projects/cryptoapp/cryptoapp/bin/Release/net7.0/cryptoapp
+/Users/tomtait/Projects/cryptoapp/cryptoapp/bin/Release/net7.0/cryptoapp.deps.json
+/Users/tomtait/Projects/cryptoapp/cryptoapp/bin/Release/net7.0/cryptoapp.runtimeconfig.json
+/Users/tomtait/Projects/cryptoapp/cryptoapp/bin/Release/net7.0/cryptoapp.dll
+/Users/tomtait/Projects/cryptoapp/cryptoapp/bin/Release/net7.0/cryptoapp.pdb
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.csproj.AssemblyReference.cache
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.GeneratedMSBuildEditorConfig.editorconfig
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.AssemblyInfoInputs.cache
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.AssemblyInfo.cs
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.csproj.CoreCompileInputs.cache
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.dll
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/refint/cryptoapp.dll
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.pdb
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/cryptoapp.genruntimeconfig.cache
+/Users/tomtait/Projects/cryptoapp/cryptoapp/obj/Release/net7.0/ref/cryptoapp.dll
