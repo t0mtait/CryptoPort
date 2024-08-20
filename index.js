@@ -94,9 +94,10 @@ app.post('/submitProfileChanges', async (req, res) => {
         Key: {
             email: req.user.email  // Use the user's email to identify the item
         },
-        UpdateExpression: 'set picture = :picture',
+        UpdateExpression: 'set picture = :picture, username = :username',
         ExpressionAttributeValues: {
-            ':picture': base64Image  // New picture value
+            ':picture': base64Image ,
+            ':username': req.body.username
         },
         ReturnValues: 'UPDATED_NEW'  // Return updated attributes
     };
