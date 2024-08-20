@@ -71,11 +71,29 @@ app.post('/login', (req,res,next) => {
     })(req,res,next)
     })
 
+app.post('/createTransacion', async (req, res) => {
+    if (req.isAuthenticated()) {
+    const params = {
+        TableName: 'crypto-transactions',
+        Item: {
+            user: req.user.id,
+            coin: req.body.coin,
+            amount: req.body.amount,
+            price: req.body.price,
+            date: new Date().toISOString()
+        }
+    };
+    }
+})
 app.post('/register', async (req,res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+        // get count of items in crypto-users
+        const result = await docClient.scan({TableName: 'crypto-users'}).promise();
+        const count = result.Count;
         const params = {
           TableName: 'crypto-users',
           Item: {
+            id: Number(count) + 1,
             email: req.body.email,
             password: hashedPassword,
             username: req.body.email,
