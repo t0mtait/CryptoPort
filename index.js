@@ -77,7 +77,9 @@ app.post('/register', async (req,res) => {
           TableName: 'crypto-users',
           Item: {
             email: req.body.email,
-            password: hashedPassword
+            password: hashedPassword,
+            username: req.body.email,
+            picture: 'https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
           }
         };
         docClient.put(params).promise();
@@ -88,7 +90,7 @@ app.post('/register', async (req,res) => {
 app.post('/submitProfileChanges', async (req, res) => {
     const image = req.body.picture;
     const base64Image = Buffer.from(image).toString('base64');
-    
+
     const params = {
         TableName: 'crypto-users',
         Key: {
