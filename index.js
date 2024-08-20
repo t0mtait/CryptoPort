@@ -77,7 +77,9 @@ app.post('/register', async (req,res) => {
           TableName: 'crypto-users',
           Item: {
             email: req.body.email,
-            password: hashedPassword
+            password: hashedPassword,
+            username: req.body.email,
+            picture: 'https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
           }
         };
         docClient.put(params).promise();
@@ -85,37 +87,75 @@ app.post('/register', async (req,res) => {
         res.redirect('/login');
 })
 
+app.post('/submitProfileChanges', async (req, res) => {
+    const image = req.body.picture;
+    const base64Image = Buffer.from(image).toString('base64');
+
+    const params = {
+        TableName: 'crypto-users',
+        Key: {
+            email: req.user.email  // Use the user's email to identify the item
+        },
+        UpdateExpression: 'set picture = :picture, username = :username',
+        ExpressionAttributeValues: {
+            ':picture': base64Image ,
+            ':username': req.body.username
+        },
+        ReturnValues: 'UPDATED_NEW'  // Return updated attributes
+    };
+
+    try {
+        const data = await docClient.update(params).promise();
+        console.log('Update succeeded:', JSON.stringify(data, null, 2));
+        res.status(200).json({ message: 'Profile updated successfully', data });
+    } catch (err) {
+        console.error('Unable to update item. Error JSON:', JSON.stringify(err, null, 2));
+        res.status(500).json({ error: 'Unable to update profile' });
+    }
+});
+
+
+
 app.get('/login', (req, res) => {
     res.render('login');
 });
 app.get('/register', (req, res) => {
     res.render('register');
 })
+
 app.get('/', (req, res) => {
     if (req.isUnauthenticated()) {
-        res.redirect('/login');
+        return res.redirect('/login');
     }
-    var options = {
-        'method': 'GET',
-        'url': 'http://api.coincap.io/v2/assets?limit=2000',
-        'headers': {}
+
+    const options = {
+        method: 'GET',
+        url: 'http://api.coincap.io/v2/assets?limit=2000',
+        headers: {}
     };
+
     request(options, function (error, response) {
         if (error) {
             console.error('API request error:', error);
             return res.status(500).send('Internal Server Error');
         }
+
         let data = response.body;
+
         try {
-            data = JSON.parse(data);
-            data = data.data;
-            res.render('index', { data: data, user: req.user });
+            data = JSON.parse(data);  // Parse the API response body
+            const assets = data.data; // Access the 'data' property in the response
+
+            // Render the page with assets and user picture
+            res.render('index', { data: assets, user: req.user });
         } catch (parseError) {
             console.error('Error parsing API response:', parseError);
             res.status(500).send('Error processing API data');
         }
     });
 });
+
+
 
 app.get('/profile', (req, res) => {
     res.render('profile', { user: req.user });

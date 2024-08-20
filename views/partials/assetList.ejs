@@ -23,8 +23,15 @@
                         <%= asset.name %>
                     </td>
                     <td class="px-6 py-4 text-white">
-                        <%= parseFloat(asset.priceUsd).toFixed(2) + '$' %>
+                        <% if (asset.priceUsd >= 1.00) { %>
+                            <%= parseFloat(asset.priceUsd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$' %>
+                        <% } else if (asset.priceUsd >= 0.01) { %>
+                            <%= parseFloat(asset.priceUsd).toFixed(4) + '$' %>
+                        <% } else { %>
+                            <%= parseFloat(asset.priceUsd).toFixed(6) + '$' %>
+                        <% } %>
                     </td>
+                </tr>
             <% }) %>
         </tbody>
     </table>
