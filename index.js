@@ -1,18 +1,17 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
-const flash = require('connect-flash'); // Import connect-flash
+const flash = require('connect-flash'); 
 const port = 3000;
 require('dotenv').config();
 const request = require('request');
 const passport = require('passport');
-require('./passportConfig.js'); // Ensure this file is correctly configured
+require('./passportConfig.js'); 
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 dotenv.config();
 const saltRounds = 10;
-
 
 AWS.config.update({
   region: 'us-east-1',
@@ -49,16 +48,15 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.post('/login', (req,res,next) => {
-    passport.authenticate('local', (err,user) => {
-        if (err)
-        {
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user) => {
+        if (err) {
             console.error('Login error:', err);
             return next(err);
         }
-        if (!user) 
-        {
-            console.warn('failed login for user')
+        if (!user) {
+            console.warn('Failed login for user');
+            return res.redirect('/login');
         }
         req.logIn(user, (err) => {
             if (err) {
@@ -68,42 +66,58 @@ app.post('/login', (req,res,next) => {
             console.log('User logged in successfully');
             return res.redirect('/');
         });
-    })(req,res,next)
-    })
+    })(req, res, next);
+});
 
-app.post('/createTransacion', async (req, res) => {
+app.post('/createTransaction', async (req, res) => {
     if (req.isAuthenticated()) {
-    const params = {
-        TableName: 'crypto-transactions',
-        Item: {
-            user: req.user.id,
-            coin: req.body.coin,
-            amount: req.body.amount,
-            price: req.body.price,
-            date: new Date().toISOString()
+        const params = {
+            TableName: 'crypto-transactions',
+            Item: {
+                user: req.user.id,
+                coin: req.body.coin,
+                amount: req.body.amount,
+                price: req.body.price,
+                date: new Date().toISOString()
+            }
+        };
+        try {
+            await docClient.put(params).promise();
+            console.log('Transaction created.');
+            res.redirect('/');
+        } catch (error) {
+            console.error('Error creating transaction:', error);
+            res.status(500).send('Error creating transaction');
         }
-    };
+    } else {
+        res.redirect('/login');
     }
-})
-app.post('/register', async (req,res) => {
-        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-        // get count of items in crypto-users
-        const result = await docClient.scan({TableName: 'crypto-users'}).promise();
+});
+
+app.post('/register', async (req, res) => {
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+    try {
+        // Get count of items in crypto-users
+        const result = await docClient.scan({ TableName: 'crypto-users' }).promise();
         const count = result.Count;
         const params = {
-          TableName: 'crypto-users',
-          Item: {
-            id: Number(count) + 1,
-            email: req.body.email,
-            password: hashedPassword,
-            username: req.body.email,
-            picture: 'https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
-          }
+            TableName: 'crypto-users',
+            Item: {
+                id: count + 1, // Ensure id is a number
+                email: req.body.email,
+                password: hashedPassword,
+                username: req.body.email,
+                picture: 'https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
+            }
         };
-        docClient.put(params).promise();
-        console.log('user registered.')
+        await docClient.put(params).promise();
+        console.log('User registered.');
         res.redirect('/login');
-})
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).send('Error registering user');
+    }
+});
 
 app.post('/submitProfileChanges', async (req, res) => {
     const image = req.body.picture;
@@ -112,11 +126,11 @@ app.post('/submitProfileChanges', async (req, res) => {
     const params = {
         TableName: 'crypto-users',
         Key: {
-            email: req.user.email  // Use the user's email to identify the item
+            id: Number(req.user.id) // Ensure id is a number
         },
         UpdateExpression: 'set picture = :picture, username = :username',
         ExpressionAttributeValues: {
-            ':picture': base64Image ,
+            ':picture': base64Image,
             ':username': req.body.username
         },
         ReturnValues: 'UPDATED_NEW'  // Return updated attributes
@@ -132,14 +146,13 @@ app.post('/submitProfileChanges', async (req, res) => {
     }
 });
 
-
-
 app.get('/login', (req, res) => {
     res.render('login');
 });
+
 app.get('/register', (req, res) => {
     res.render('register');
-})
+});
 
 app.get('/', (req, res) => {
     if (req.isUnauthenticated()) {
@@ -173,11 +186,10 @@ app.get('/', (req, res) => {
     });
 });
 
-
-
 app.get('/profile', (req, res) => {
     res.render('profile', { user: req.user });
 });
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
