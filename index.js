@@ -99,6 +99,10 @@ app.post('/createTransaction', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+    if (req.body.password !== req.body.confirmPassword) {
+        console.error('Passwords do not match');
+        return res.status(400).send('Passwords do not match');
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     try {
         // Get count of items in crypto-users
