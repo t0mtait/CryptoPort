@@ -14,33 +14,33 @@ AWS.config.update({
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 passport.use(new LocalStrategy(
-  async function(username, password, done) {
-    console.log(`Authentication attempt by: [${username}]`);
+  async function(email, password, done) {
+    console.log(`Authentication attempt by: [${email}]`);
     
     const params = {
       TableName: 'crypto-users',
-      Key: {
-        'email': username
-      }
+      FilterExpression: 'email = :email',
+      ExpressionAttributeValues: { ':email': email }
     };
-    
+
     try {
-      const data = await docClient.get(params).promise();
+      const data = await docClient.scan(params).promise();
       console.log('Data read from DynamoDB:', JSON.stringify(data, null, 2));
-      
-      const user = data.Item; // Data is stored in the `Item` field
-      
-      if (!user) {
+
+      if (data.Items.length === 0) {
         console.log('User does not exist.');
         return done(null, false, { message: 'User does not exist.' });
       }
+
+      const user = data.Items[0];
+
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        console.log('Incorrect password for user:', username);
+        console.log('Incorrect password for user:', email);
         return done(null, false, { message: 'Incorrect password.' });
       }
 
-      console.log('Authentication successful for user:', username);
+      console.log('Authentication successful for user:', email);
       return done(null, user);
 
     } catch (err) {
@@ -50,7 +50,6 @@ passport.use(new LocalStrategy(
   }
 ));
 
-// Serialize and deserialize user to maintain session
 passport.serializeUser(function(user, done) {
   console.log('Serializing user:', user.email);
   done(null, user.email);
@@ -59,21 +58,20 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(async function(email, done) {
   const params = {
     TableName: 'crypto-users',
-    Key: {
-      'email': email
-    }
+    FilterExpression: 'email = :email',
+    ExpressionAttributeValues: { ':email': email }
   };
 
   try {
-    const data = await docClient.get(params).promise();
-    const user = data.Item;
+    const data = await docClient.scan(params).promise();
+    const user = data.Items[0];
     
     if (user) {
       console.log('Deserializing user:', user.email);
     } else {
       console.log('User not found during deserialization');
     }
-    
+
     done(null, user);
 
   } catch (err) {

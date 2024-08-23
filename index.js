@@ -1,18 +1,17 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
-const flash = require('connect-flash'); // Import connect-flash
+const flash = require('connect-flash'); 
 const port = 3000;
 require('dotenv').config();
 const request = require('request');
 const passport = require('passport');
-require('./passportConfig.js'); // Ensure this file is correctly configured
+require('./passportConfig.js'); 
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 dotenv.config();
 const saltRounds = 10;
-
 
 AWS.config.update({
   region: 'us-east-1',
@@ -49,16 +48,15 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.post('/login', (req,res,next) => {
-    passport.authenticate('local', (err,user) => {
-        if (err)
-        {
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user) => {
+        if (err) {
             console.error('Login error:', err);
             return next(err);
         }
-        if (!user) 
-        {
-            console.warn('failed login for user')
+        if (!user) {
+            console.warn('Failed login for user');
+            return res.redirect('/login');
         }
         req.logIn(user, (err) => {
             if (err) {
@@ -68,24 +66,66 @@ app.post('/login', (req,res,next) => {
             console.log('User logged in successfully');
             return res.redirect('/');
         });
-    })(req,res,next)
-    })
+    })(req, res, next);
+});
 
-app.post('/register', async (req,res) => {
-        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+app.post('/createTransaction', async (req, res) => {
+    const result = await docClient.scan({ TableName: 'crypto-transactions' }).promise();
+    const count = result.Count;
+    if (req.isAuthenticated()) {
         const params = {
-          TableName: 'crypto-users',
-          Item: {
-            email: req.body.email,
-            password: hashedPassword,
-            username: req.body.email,
-            picture: 'https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
-          }
+            TableName: 'crypto-transactions',
+            Item: {
+                id: count + 1,
+                user: req.user.id,
+                asset: req.body.asset,
+                quantity: req.body.quantity,
+                price: req.body.price,
+                date: req.body.date,
+                type: 'Buy'
+            }
         };
-        docClient.put(params).promise();
-        console.log('user registered.')
+        try {
+            await docClient.put(params).promise();
+            console.log('Transaction created.');
+            res.redirect('/');
+        } catch (error) {
+            console.error('Error creating transaction:', error);
+            res.status(500).send('Error creating transaction');
+        }
+    } else {
         res.redirect('/login');
-})
+    }
+});
+
+app.post('/register', async (req, res) => {
+    if (req.body.password !== req.body.confirmPassword) {
+        console.error('Passwords do not match');
+        return res.status(400).send('Passwords do not match');
+    }
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+    try {
+        // Get count of items in crypto-users
+        const result = await docClient.scan({ TableName: 'crypto-users' }).promise();
+        const count = result.Count;
+        const params = {
+            TableName: 'crypto-users',
+            Item: {
+                id: count + 1, // Ensure id is a number
+                email: req.body.email,
+                password: hashedPassword,
+                username: req.body.email,
+                picture: 'https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
+            }
+        };
+        await docClient.put(params).promise();
+        console.log('User registered.');
+        res.redirect('/login');
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).send('Error registering user');
+    }
+});
 
 app.post('/submitProfileChanges', async (req, res) => {
     const image = req.body.picture;
@@ -94,11 +134,11 @@ app.post('/submitProfileChanges', async (req, res) => {
     const params = {
         TableName: 'crypto-users',
         Key: {
-            email: req.user.email  // Use the user's email to identify the item
+            id: Number(req.user.id) // Ensure id is a number
         },
         UpdateExpression: 'set picture = :picture, username = :username',
         ExpressionAttributeValues: {
-            ':picture': base64Image ,
+            ':picture': base64Image,
             ':username': req.body.username
         },
         ReturnValues: 'UPDATED_NEW'  // Return updated attributes
@@ -113,15 +153,42 @@ app.post('/submitProfileChanges', async (req, res) => {
         res.status(500).json({ error: 'Unable to update profile' });
     }
 });
-
-
+app.get('/userTransactions', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const params = {
+            TableName: 'crypto-transactions',
+            FilterExpression: '#user = :user',
+            ExpressionAttributeNames: {
+              '#user': 'user'  // Use #user to refer to the 'user' attribute
+            },
+            ExpressionAttributeValues: { 
+              ':user': req.user.id,
+            }};
+        try {
+            const data = await docClient.scan(params).promise();
+            res.status(200).json(data);
+        }
+        catch (err)
+        {
+            console.error('Unable to read item. Error JSON:', JSON.stringify(err, null, 2));
+            res.status(500).json({ error: 'Unable to read item' });
+        }
+        };
+        })
 
 app.get('/login', (req, res) => {
     res.render('login');
 });
+
 app.get('/register', (req, res) => {
     res.render('register');
-})
+});
+app.get('/portfolio', (req, res) => {
+    // get current date
+    const today = new Date();
+    console.log('rendering portfolio');
+    res.render('portfolio', { user: req.user, nowDate: today });
+});
 
 app.get('/', (req, res) => {
     if (req.isUnauthenticated()) {
@@ -155,11 +222,10 @@ app.get('/', (req, res) => {
     });
 });
 
-
-
 app.get('/profile', (req, res) => {
     res.render('profile', { user: req.user });
 });
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
