@@ -9,6 +9,9 @@
                     Asset
                 </th>
                 <th scope="col" class="px-6 py-3">
+                    Ticker
+                </th>
+                <th scope="col" class="px-6 py-3">
                     Price
                 </th>       
             </tr>
@@ -21,6 +24,9 @@
                     </th>
                     <td class="px-6 py-4 text-white">
                         <%= asset.name %>
+                    </td>
+                    <td class="px-6 py-4 text-white">
+                        <%= asset.symbol %>
                     </td>
                     <td class="px-6 py-4 text-white">
                         <% if (asset.priceUsd >= 1.00) { %>
