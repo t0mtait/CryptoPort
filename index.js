@@ -70,15 +70,19 @@ app.post('/login', (req, res, next) => {
 });
 
 app.post('/createTransaction', async (req, res) => {
+    const result = await docClient.scan({ TableName: 'crypto-transactions' }).promise();
+    const count = result.Count;
     if (req.isAuthenticated()) {
         const params = {
             TableName: 'crypto-transactions',
             Item: {
+                id: count + 1,
                 user: req.user.id,
-                coin: req.body.coin,
-                amount: req.body.amount,
+                asset: req.body.asset,
+                quantity: req.body.quantity,
                 price: req.body.price,
-                date: new Date().toISOString()
+                date: req.body.date,
+                type: 'Buy'
             }
         };
         try {
@@ -145,6 +149,28 @@ app.post('/submitProfileChanges', async (req, res) => {
         res.status(500).json({ error: 'Unable to update profile' });
     }
 });
+app.get('/userTransactions', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const params = {
+            TableName: 'crypto-transactions',
+            FilterExpression: '#user = :user',
+            ExpressionAttributeNames: {
+              '#user': 'user'  // Use #user to refer to the 'user' attribute
+            },
+            ExpressionAttributeValues: { 
+              ':user': req.user.id,
+            }};
+        try {
+            const data = await docClient.scan(params).promise();
+            res.status(200).json(data);
+        }
+        catch (err)
+        {
+            console.error('Unable to read item. Error JSON:', JSON.stringify(err, null, 2));
+            res.status(500).json({ error: 'Unable to read item' });
+        }
+        };
+        })
 
 app.get('/login', (req, res) => {
     res.render('login');
@@ -152,6 +178,12 @@ app.get('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
     res.render('register');
+});
+app.get('/portfolio', (req, res) => {
+    // get current date
+    const today = new Date();
+    console.log('rendering portfolio');
+    res.render('portfolio', { user: req.user, nowDate: today });
 });
 
 app.get('/', (req, res) => {

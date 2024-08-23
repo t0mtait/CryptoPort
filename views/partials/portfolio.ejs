@@ -1,0 +1,83 @@
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Type
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Date
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Asset
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Price
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Quantity
+                </th>
+            </tr>
+        </thead>
+        <tbody id = "transactionTableBody">
+        </tbody>
+    </table>
+    <p id = "portfolio"></p>
+</div>
+
+<script>
+    async function fetchUserAssets() {
+        try {
+            const response = await fetch('/userTransactions', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include' // Include cookies for authentication
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            displayUserAssets(data);
+        } catch (error) {
+            console.error('Error fetching user assets:', error);
+        }
+    }
+
+    function displayUserAssets(data) {
+    console.log('DATA:', data);
+    const portfolioDiv = document.getElementById('portfolio');
+    const transactionHistoryBody = document.getElementById('transactionTableBody');
+    portfolioDiv.innerHTML = '';
+    transactionHistoryBody.innerHTML = ''; // Clear previous data
+
+    if (data.Items && data.Items.length > 0) {
+        data.Items.forEach((item, index) => {  // Added 'index' for alternating row colors
+            const row = document.createElement('tr');
+            row.classList.add(
+                index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700',
+                'border-b',
+                'dark:border-gray-700'
+            );
+            row.innerHTML = `
+                <td class="px-6 py-3">${item.type}</td>
+                <td class="px-6 py-3">${item.date}</td>
+                <td class="px-6 py-3">${item.asset}</td>
+                <td class="px-6 py-3">${item.price}</td>
+                <td class="px-6 py-3">${item.quantity}</td>
+            `;
+            transactionHistoryBody.appendChild(row);
+        });
+    } else {
+        portfolioDiv.textContent = 'No assets found.';
+    }
+}
+
+
+    // Fetch user assets when the page loads
+    window.onload = fetchUserAssets;
+</script>
