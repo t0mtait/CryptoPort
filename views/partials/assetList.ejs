@@ -1,44 +1,99 @@
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs uppercase bg-gray-800 text-white">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    MC Rank
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Asset
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Ticker
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Price
-                </th>       
-            </tr>
-        </thead>
-        <tbody>
-            <% data.forEach(function(asset) { %>
-                <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
-                        <%= asset.rank %>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+
+    <style>
+        /* Change labels and other DataTables text to white */
+        .dataTables_wrapper .dataTables_filter label,
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            color: white;
+        }
+      
+        /* Change the text color of the search input field */
+        .dataTables_wrapper .dataTables_filter input {
+            color: white;
+            background-color: transparent; /* Optional: Change background color */
+            border: 1px solid white; /* Optional: Add a white border */
+        }
+      
+        /* Change the color of the pagination buttons */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: white !important;
+        }
+      
+        /* Optional: Change background color of pagination buttons */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            background-color: #333; /* Dark background for buttons */
+        }
+      
+        /* Highlight current pagination button */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #444;
+            color: white !important;
+        }
+      
+        /* Change the color of the "show entries" dropdown */
+        .dataTables_wrapper .dataTables_length select {
+            color: white;
+            background-color: transparent; /* Optional: Transparent background */
+            border: 1px solid white; /* Optional: White border */
+        }
+      </style>
+      
+</head>
+
+<body>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table id = "assetsTable" class="display w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs uppercase bg-gray-800 text-white">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        MC Rank
                     </th>
-                    <td class="px-6 py-4 text-white">
-                        <%= asset.name %>
-                    </td>
-                    <td class="px-6 py-4 text-white">
-                        <%= asset.symbol %>
-                    </td>
-                    <td class="px-6 py-4 text-white">
-                        <% if (asset.priceUsd >= 1.00) { %>
-                            <%= parseFloat(asset.priceUsd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$' %>
-                        <% } else if (asset.priceUsd >= 0.01) { %>
-                            <%= parseFloat(asset.priceUsd).toFixed(4) + '$' %>
-                        <% } else { %>
-                            <%= parseFloat(asset.priceUsd).toFixed(6) + '$' %>
-                        <% } %>
-                    </td>
+                    <th scope="col" class="px-6 py-3">
+                        Asset
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ticker
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Price
+                    </th>       
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                <% data.forEach(function(asset) { %>
+                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                        <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
+                            <%= asset.rank %>
+                        </th>
+                        <td class="px-6 py-4 text-white">
+                            <%= asset.name %>
+                        </td>
+                        <td class="px-6 py-4 text-white">
+                            <%= asset.symbol %>
+                        </td>
+                        <td class="px-6 py-4 text-white">
+                            <% if (asset.priceUsd >= 1.00) { %>
+                                <%= parseFloat(asset.priceUsd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$' %>
+                            <% } else if (asset.priceUsd >= 0.01) { %>
+                                <%= parseFloat(asset.priceUsd).toFixed(4) + '$' %>
+                            <% } else { %>
+                                <%= parseFloat(asset.priceUsd).toFixed(6) + '$' %>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(document).ready( function () {
+            $('#assetsTable').DataTable();
+          });
+    </script>
+</body>
