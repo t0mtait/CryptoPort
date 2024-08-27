@@ -6,6 +6,7 @@
     <title>Login | CryptoPort</title>
     <link rel="icon" href="https://icons.veryicon.com/png/o/business/wb-legend-of-shanghai-ocean-bearing-body/wb-uu-port-terminal.png" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
 
@@ -40,6 +41,31 @@
             </div>
         </div>
     </section>
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error'); // Retrieve the 'error' query parameter
+        const registered = urlParams.get('registered'); // Retrieve the 'error' query parameter
+
+
+        if (error === 'found') { 
+            Swal.fire({
+                title: 'Invalid login',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+        }
+        if (registered === 'true') { 
+            Swal.fire({
+                title: 'Registration Successful',
+                icon: 'success',
+                confirmButtonText: 'Login'
+            });
+        }
+        
+    </script>
+
+        
     
 </body>
 </html>

@@ -15,6 +15,7 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 passport.use(new LocalStrategy(
   async function(email, password, done) {
+    email = email.toLowerCase();
     console.log(`Authentication attempt by: [${email}]`);
     
     const params = {
