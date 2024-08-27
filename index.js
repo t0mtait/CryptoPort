@@ -56,7 +56,7 @@ app.post('/login', (req, res, next) => {
         }
         if (!user) {
             console.warn('Failed login for user');
-            return res.redirect('/login');
+           return res.redirect('/login?error=found');
         }
         req.logIn(user, (err) => {
             if (err) {
@@ -112,7 +112,7 @@ app.post('/register', async (req, res) => {
             TableName: 'crypto-users',
             Item: {
                 id: count + 1, // Ensure id is a number
-                email: req.body.email,
+                email: req.body.email.toLowerCase(),
                 password: hashedPassword,
                 username: req.body.email,
                 picture: 'https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
@@ -120,7 +120,7 @@ app.post('/register', async (req, res) => {
         };
         await docClient.put(params).promise();
         console.log('User registered.');
-        res.redirect('/login');
+        res.redirect('/login?registered=true');
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).send('Error registering user');
