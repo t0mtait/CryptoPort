@@ -26,7 +26,6 @@ passport.use(new LocalStrategy(
 
     try {
       const data = await docClient.scan(params).promise();
-      console.log('Data read from DynamoDB:', JSON.stringify(data, null, 2));
 
       if (data.Items.length === 0) {
         console.log('User does not exist.');

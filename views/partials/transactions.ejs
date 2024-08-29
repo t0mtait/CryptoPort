@@ -1,5 +1,6 @@
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <p class="text-4xl m-2 dark:text-white text-center">Transaction History</p>
     <table class="w-full text-sm text-left rtl:text-right text-white">
         <thead class="text-xs text-white uppercase bg-gray-700 ">
             <tr>
@@ -23,11 +24,12 @@
         <tbody id = "transactionTableBody">
         </tbody>
     </table>
-    <p id = "portfolio"></p>
+    <p id = "portfolio" class = "text-white"></p>
 </div>
 
 <script>
-    async function fetchUserAssets() {
+    async function fetchUserTransactions() {
+        console.log('fetching user transactions');
         try {
             const response = await fetch('/userTransactions', {
                 method: 'GET',
@@ -42,14 +44,14 @@
             }
 
             const data = await response.json();
-            displayUserAssets(data);
+            displayUserTransactions(data);
         } catch (error) {
             console.error('Error fetching user assets:', error);
         }
     }
 
-    function displayUserAssets(data) {
-    console.log('DATA:', data);
+    function displayUserTransactions(data) {
+    console.log('displaying user transactions');
     const portfolioDiv = document.getElementById('portfolio');
     const transactionHistoryBody = document.getElementById('transactionTableBody');
     portfolioDiv.innerHTML = '';
@@ -73,11 +75,10 @@
             transactionHistoryBody.appendChild(row);
         });
     } else {
-        portfolioDiv.textContent = 'No assets found.';
+        portfolioDiv.textContent = 'No transactions found.';
     }
 }
-
-
-    // Fetch user assets when the page loads
-    window.onload = fetchUserAssets;
+window.addEventListener('DOMContentLoaded', function() {
+    fetchUserTransactions();
+});
 </script>
