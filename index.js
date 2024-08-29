@@ -64,6 +64,7 @@ app.post('/login', (req, res, next) => {
 });
 
 app.post('/createTransaction', async (req, res) => {
+    const assetName = (req.body.asset || '').trim().toLowerCase();
     const result = await docClient.scan({ TableName: 'crypto-transactions' }).promise();
     const count = result.Count;
     if (req.isAuthenticated()) {
@@ -72,7 +73,7 @@ app.post('/createTransaction', async (req, res) => {
             Item: {
                 id: count + 1,
                 user: req.user.id,
-                asset: req.body.asset,
+                asset: assetName,
                 quantity: req.body.quantity,
                 price: req.body.price,
                 date: req.body.date,
@@ -82,7 +83,7 @@ app.post('/createTransaction', async (req, res) => {
         try {
             await docClient.put(params).promise();
             console.log('Transaction created.');
-            res.redirect('/');
+            res.redirect('/portfolio');
         } catch (error) {
             console.error('Error creating transaction:', error);
             res.status(500).send('Error creating transaction');
@@ -121,7 +122,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-app.post('/submitProfileChanges', async (req, res) => {
+app.post('/submitProfileChanges', async (req) => {
     const image = req.body.picture;
     const base64Image = Buffer.from(image).toString('base64');
 
@@ -140,11 +141,10 @@ app.post('/submitProfileChanges', async (req, res) => {
 
     try {
         const data = await docClient.update(params).promise();
-        console.log('Update succeeded:', JSON.stringify(data, null, 2));
-        res.status(200).json({ message: 'Profile updated successfully', data });
+        console.log('User profile updated:', data);
     } catch (err) {
         console.error('Unable to update item. Error JSON:', JSON.stringify(err, null, 2));
-        res.status(500).json({ error: 'Unable to update profile' });
+
     }
 });
 app.get('/userTransactions', async (req, res) => {

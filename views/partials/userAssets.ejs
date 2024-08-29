@@ -5,7 +5,7 @@
             <tr>
                 <th scope="col" class="px-6 py-3">Name</th>
                 <th scope="col" class="px-6 py-3">Price</th>
-                <th scope="col" class="px-6 py-3">24h%</th>
+                <th scope="col" class="px-6 py-3">24h</th>
                 <th scope="col" class="px-6 py-3">Holdings</th>
             </tr>
         </thead>
@@ -47,23 +47,38 @@
     function displayUserAssets(data) {
     console.log('displaying user assets');
     const assetHistoryBody = document.getElementById('assetTableBody');
-    assetHistoryBody.innerHTML = ''; // Clear previous data
+    assetHistoryBody.innerHTML = '';
 
-    data.forEach((item, index) => {  // Use forEach to iterate over array
-            const row = document.createElement('tr');
-            row.classList.add(
-                'border-b',
-                'dark:border-gray-700',
-                index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700' // Alternate row colors
-            );
-            row.innerHTML = `
-                <td class="px-6 py-3">${item.asset}</td>
-                <td class="px-6 py-3">${item.price}</td>
-                <td class="px-6 py-3">${item.dailyChange}</td>
-                <td class="px-6 py-3">${item.quantity}</td>
-            `;
-            assetTableBody.appendChild(row);
-        });
+    data.forEach((item, index) => { 
+    const row = document.createElement('tr');
+    row.classList.add(
+        'border-b',
+        'dark:border-gray-700',
+        index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700'
+    );
+
+    let formattedPrice;
+    let formattedChange;
+    let formattedHoldings;
+    formattedHoldings = parseFloat(item.quantity).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    formattedChange = parseFloat(item.dailyChange).toFixed(2) + '%';
+    if (item.price >= 1.00) {
+        formattedPrice = parseFloat(item.price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$';
+    } else if (item.price >= 0.01) {
+        formattedPrice = parseFloat(item.price).toFixed(4) + '$';
+    } else {
+        formattedPrice = parseFloat(item.price).toFixed(6) + '$';
+    }
+
+    row.innerHTML = `
+        <td class="px-6 py-3">${item.asset}</td>
+        <td class="px-6 py-3">${formattedPrice}</td>
+        <td class="px-6 py-3">${formattedChange}</td>
+        <td class="px-6 py-3">${item.quantity}</td>
+    `;
+    assetTableBody.appendChild(row);
+});
+
     } 
     window.addEventListener('DOMContentLoaded', fetchUserAssets);
 </script>
