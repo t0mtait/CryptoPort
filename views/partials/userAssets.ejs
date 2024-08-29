@@ -59,6 +59,8 @@
 
     let formattedPrice;
     let formattedChange;
+    let formattedHoldings;
+    formattedHoldings = parseFloat(item.quantity).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     formattedChange = parseFloat(item.dailyChange).toFixed(2) + '%';
     if (item.price >= 1.00) {
         formattedPrice = parseFloat(item.price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$';
@@ -69,7 +71,7 @@
     }
 
     row.innerHTML = `
-        <td class="px-6 py-3">${item.item}</td>
+        <td class="px-6 py-3">${item.asset}</td>
         <td class="px-6 py-3">${formattedPrice}</td>
         <td class="px-6 py-3">${formattedChange}</td>
         <td class="px-6 py-3">${item.quantity}</td>
