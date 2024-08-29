@@ -10,3 +10,15 @@
     <%- include ('partials/userAssets') %>
     <%- include ('partials/transactions') %>
 </body>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const updated = urlParams.get('profileUpdated');
+    if (profileUpdated) {
+        Swal.fire({
+            title: 'Profile Updated',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+        });
+    }
+</script>

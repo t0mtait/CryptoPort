@@ -121,7 +121,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-app.post('/submitProfileChanges', async (req, res) => {
+app.post('/submitProfileChanges', async (req) => {
     const image = req.body.picture;
     const base64Image = Buffer.from(image).toString('base64');
 
@@ -140,11 +140,10 @@ app.post('/submitProfileChanges', async (req, res) => {
 
     try {
         const data = await docClient.update(params).promise();
-        console.log('Update succeeded:', JSON.stringify(data, null, 2));
-        res.status(200).json({ message: 'Profile updated successfully', data });
+        console.log('User profile updated:', data);
     } catch (err) {
         console.error('Unable to update item. Error JSON:', JSON.stringify(err, null, 2));
-        res.status(500).json({ error: 'Unable to update profile' });
+
     }
 });
 app.get('/userTransactions', async (req, res) => {
