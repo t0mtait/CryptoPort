@@ -1,7 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const session = require('express-session');
-const flash = require('connect-flash'); 
+const session = require('express-session'); 
 const port = 3000;
 require('dotenv').config();
 const request = require('request');
@@ -10,6 +9,8 @@ require('./passportConfig.js');
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
+const axios = require('axios'); // Install axios with npm install axios
+
 dotenv.config();
 const saltRounds = 10;
 
@@ -30,8 +31,6 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false } 
 }));
-
-app.use(flash());
 app.use(express.static('public'));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -40,12 +39,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
-app.use((req, res, next) => {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-    next();
-});
+
 
 // Routes
 app.post('/login', (req, res, next) => {
@@ -176,6 +170,80 @@ app.get('/userTransactions', async (req, res) => {
         };
         })
 
+        app.get('/userAssets', async (req, res) => {
+            if (req.isAuthenticated()) {
+                const params = {
+                    TableName: 'crypto-transactions',
+                    FilterExpression: '#user = :user',
+                    ExpressionAttributeNames: {
+                        '#user': 'user'
+                    },
+                    ExpressionAttributeValues: {
+                        ':user': req.user.id,
+                    }
+                };
+        
+                try {
+                    // Fetch data from DynamoDB
+                    const data = await docClient.scan(params).promise();
+                    
+                    // Initialize a Set to store unique user coins
+                    const userCoins = new Set();
+        
+                    // Iterate over the items and add assets to the Set
+                    for (const item of data.Items) {
+                        userCoins.add(item.asset); // Use add to ensure uniqueness
+                    }
+        
+                    // Convert the Set to an Array to handle async operations
+                    const coinPromises = Array.from(userCoins).map(async (coin) => {
+                        let amount = 0;
+        
+                        for (const transaction of data.Items) {
+                            if (transaction.asset === coin) {
+                                if (transaction.type === 'Buy') {
+                                    amount += Number(transaction.quantity);
+                                } else if (transaction.type === 'Sell') {
+                                    amount -= Number(transaction.quantity);
+                                }
+                            }
+                        }
+        
+                        try {
+                            const response = await axios.get(`http://api.coincap.io/v2/assets/${coin.toLowerCase()}`);
+                            const assetData = response.data.data;
+                            return {
+                                asset: coin,
+                                quantity: amount,
+                                price: assetData.priceUsd,
+                                dailyChange: assetData.changePercent24Hr
+                            };
+                        } catch (error) {
+                            console.error(`Error fetching data for ${coin}:`, error);
+                            return null;
+                        }
+                    });
+        
+                    // Wait for all promises to resolve
+                    const resolvedAssets = await Promise.all(coinPromises);
+                    // Filter out any null values that may have resulted from API errors
+                    const filteredAssets = resolvedAssets.filter(asset => asset !== null);
+        
+                    res.status(200).json({
+                        userAssets: filteredAssets
+                    });
+        
+                } catch (error) {
+                    console.error('Error scanning DynamoDB:', error);
+                    if (!res.headersSent) {
+                        res.status(500).json({ error: 'An error occurred while fetching data.' });
+                    }
+                }
+            } else {
+                res.status(401).json({ error: 'Unauthorized' });
+            }
+        });
+
 app.get('/login', (req, res) => {
     res.render('login');
 });
@@ -186,7 +254,6 @@ app.get('/register', (req, res) => {
 app.get('/portfolio', (req, res) => {
     // get current date
     const today = new Date();
-    console.log('rendering portfolio');
     res.render('portfolio', { user: req.user, nowDate: today });
 });
 

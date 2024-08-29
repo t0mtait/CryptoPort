@@ -1,0 +1,69 @@
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <p class="text-4xl m-2 dark:text-white text-center">Wallet</p>
+    <table class="w-full text-sm text-left rtl:text-right text-white">
+        <thead class="text-xs text-white uppercase bg-gray-700">
+            <tr>
+                <th scope="col" class="px-6 py-3">Name</th>
+                <th scope="col" class="px-6 py-3">Price</th>
+                <th scope="col" class="px-6 py-3">24h%</th>
+                <th scope="col" class="px-6 py-3">Holdings</th>
+            </tr>
+        </thead>
+        <tbody id="assetTableBody"></tbody>
+    </table>
+</div>
+
+<script>
+    async function fetchUserAssets() {
+        console.log('Fetching user assets...');
+        try {
+            const response = await fetch('/userAssets', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('Response data:', data);
+
+            // Assuming data.userAssets is an object with an Items array
+            const assets = data.userAssets || {};
+            console.log('Assets:', assets);
+
+            
+            displayUserAssets(assets);
+            
+        } catch (error) {
+            console.error('Error fetching user assets:', error);
+        }
+    }
+
+    function displayUserAssets(data) {
+    console.log('displaying user assets');
+    const assetHistoryBody = document.getElementById('assetTableBody');
+    assetHistoryBody.innerHTML = ''; // Clear previous data
+
+    data.forEach((item, index) => {  // Use forEach to iterate over array
+            const row = document.createElement('tr');
+            row.classList.add(
+                'border-b',
+                'dark:border-gray-700',
+                index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700' // Alternate row colors
+            );
+            row.innerHTML = `
+                <td class="px-6 py-3">${item.asset}</td>
+                <td class="px-6 py-3">${item.price}</td>
+                <td class="px-6 py-3">${item.dailyChange}</td>
+                <td class="px-6 py-3">${item.quantity}</td>
+            `;
+            assetTableBody.appendChild(row);
+        });
+    } 
+    window.addEventListener('DOMContentLoaded', fetchUserAssets);
+</script>
