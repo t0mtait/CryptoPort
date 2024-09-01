@@ -263,6 +263,9 @@ app.get('/register', (req, res) => {
 });
 app.get('/portfolio', (req, res) => {
     // get current date
+    if (req.isUnauthenticated()) {
+        return res.redirect('/login');
+    }
     const today = new Date();
     res.render('portfolio', { user: req.user, nowDate: today });
 });
@@ -300,6 +303,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
+    if (req.isUnauthenticated()) {
+        return res.redirect('/login');
+    }
     res.render('profile', { user: req.user });
 });
 
