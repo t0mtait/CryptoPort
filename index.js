@@ -94,6 +94,7 @@ app.post('/createTransaction', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+
     if (req.body.password !== req.body.confirmPassword) {
         console.error('Passwords do not match');
         return res.status(400).send('Passwords do not match');
@@ -101,6 +102,15 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     try {
         // Get count of items in crypto-users
+        const userExists = await docClient.scan({ TableName: 'crypto-users', 
+        FilterExpression: 'email = :email',
+        ExpressionAttributeValues: {
+            ':email': req.body.email.toLowerCase()
+         }}).promise();
+        if (userExists.Count > 0) {
+            console.error('User already exists');
+            return res.redirect('/register?error=exists');
+        };
         const result = await docClient.scan({ TableName: 'crypto-users' }).promise();
         const count = result.Count;
         const params = {
@@ -216,7 +226,8 @@ app.get('/userTransactions', async (req, res) => {
                                 asset: coin,
                                 quantity: amount,
                                 price: assetData.priceUsd,
-                                dailyChange: assetData.changePercent24Hr
+                                dailyChange: assetData.changePercent24Hr,
+                                value: amount * assetData.priceUsd
                             };
                         } catch (error) {
                             console.error(`Error fetching data for ${coin}:`, error);
@@ -253,6 +264,9 @@ app.get('/register', (req, res) => {
 });
 app.get('/portfolio', (req, res) => {
     // get current date
+    if (req.isUnauthenticated()) {
+        return res.redirect('/login');
+    }
     const today = new Date();
     res.render('portfolio', { user: req.user, nowDate: today });
 });
@@ -290,6 +304,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
+    if (req.isUnauthenticated()) {
+        return res.redirect('/login');
+    }
     res.render('profile', { user: req.user });
 });
 

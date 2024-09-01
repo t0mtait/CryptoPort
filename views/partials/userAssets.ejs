@@ -1,5 +1,5 @@
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <p class="text-4xl m-2 dark:text-white text-center">Wallet</p>
+    <p class="text-4xl m-2 dark:text-white bg-gray-800 rounded-lg p-5 text-center">Wallet</p>
     <table class="w-full text-sm text-left rtl:text-right text-white">
         <thead class="text-xs text-white uppercase bg-gray-700">
             <tr>
@@ -7,6 +7,8 @@
                 <th scope="col" class="px-6 py-3">Price</th>
                 <th scope="col" class="px-6 py-3">24h</th>
                 <th scope="col" class="px-6 py-3">Holdings</th>
+                <th scope="col" class="px-6 py-3">Value</th>
+                <th scope="col" class="px-6 py-3">Action</th>
             </tr>
         </thead>
         <tbody id="assetTableBody"></tbody>
@@ -62,6 +64,7 @@
     let formattedHoldings;
     formattedHoldings = parseFloat(item.quantity).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     formattedChange = parseFloat(item.dailyChange).toFixed(2) + '%';
+    formattedValue = parseFloat(item.value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$';
     if (item.price >= 1.00) {
         formattedPrice = parseFloat(item.price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$';
     } else if (item.price >= 0.01) {
@@ -75,6 +78,9 @@
         <td class="px-6 py-3">${formattedPrice}</td>
         <td class="px-6 py-3">${formattedChange}</td>
         <td class="px-6 py-3">${item.quantity}</td>
+        <td class="px-6 py-3">${formattedValue}</td>
+        <td class="px-6 py-3"><button type="button" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2 m-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Sell</button></td>
+
     `;
     assetTableBody.appendChild(row);
 });

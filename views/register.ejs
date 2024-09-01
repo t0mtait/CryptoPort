@@ -3,6 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register | CryptoPort</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" href="https://icons.veryicon.com/png/o/business/wb-legend-of-shanghai-ocean-bearing-body/wb-uu-port-terminal.png" type="image/x-icon">
 </head>
 <section class="bg-gray-50 dark:bg-gray-900">
@@ -38,3 +39,17 @@
         </div>
     </div>
   </section>
+
+
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error'); // Retrieve the 'error' query parameter
+        if (error == 'exists') {
+            Swal.fire({
+                title: 'Email address in use!',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+        }
+  </script>
