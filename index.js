@@ -226,7 +226,8 @@ app.get('/userTransactions', async (req, res) => {
                                 asset: coin,
                                 quantity: amount,
                                 price: assetData.priceUsd,
-                                dailyChange: assetData.changePercent24Hr
+                                dailyChange: assetData.changePercent24Hr,
+                                value: amount * assetData.priceUsd
                             };
                         } catch (error) {
                             console.error(`Error fetching data for ${coin}:`, error);
