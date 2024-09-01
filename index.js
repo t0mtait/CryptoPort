@@ -94,6 +94,7 @@ app.post('/createTransaction', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+
     if (req.body.password !== req.body.confirmPassword) {
         console.error('Passwords do not match');
         return res.status(400).send('Passwords do not match');
@@ -101,6 +102,15 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     try {
         // Get count of items in crypto-users
+        const userExists = await docClient.scan({ TableName: 'crypto-users', 
+        FilterExpression: 'email = :email',
+        ExpressionAttributeValues: {
+            ':email': req.body.email.toLowerCase()
+         }}).promise();
+        if (userExists.Count > 0) {
+            console.error('User already exists');
+            return res.redirect('/register?error=exists');
+        };
         const result = await docClient.scan({ TableName: 'crypto-users' }).promise();
         const count = result.Count;
         const params = {
