@@ -1,5 +1,12 @@
 # CryptoPort - Cryptocurrency Market + Portfolio Tracker
 
+### Screenshots:
+![image](https://github.com/user-attachments/assets/227d56fc-d904-45f1-881c-9442f0ed3b87)
+![image](https://github.com/user-attachments/assets/5e754e51-0b41-413a-89fb-07492faea756)
+![image](https://github.com/user-attachments/assets/f89d37ed-7d50-49e8-afb3-bc68c69fc5d5)
+
+
+
 ### General features:
 - Effortlessly monitor and manage your cryptocurrency portfolio
 - Sync Account balance Across multiple Exchanges
@@ -32,3 +39,4 @@
 - CoinCap API v2
 - Passport
 - Tailwind
+
