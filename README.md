@@ -1,5 +1,5 @@
 # CryptoPort - Cryptocurrency Market + Portfolio Tracker
-### Contact me @ tomjtait@Outlook.com if you would like me to deploy CryptoPort temporarily to cryptoport.tomtait.dev
+### contact me @ tomjtait@Outlook.com for deployment to cryptoport.tomtait.dev
 #### Screenshots:
 ![image](https://github.com/user-attachments/assets/227d56fc-d904-45f1-881c-9442f0ed3b87)
 ![image](https://github.com/user-attachments/assets/30a19a7a-02d9-47b1-9005-650d02bf4e87)
