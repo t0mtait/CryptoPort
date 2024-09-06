@@ -63,7 +63,57 @@ app.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-app.post('/createTransaction', async (req, res) => {
+app.post('/deleteTransaction', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const params = {
+            TableName: 'crypto-transactions',
+            Key: {
+                id: Number(req.body.id) // Ensure id is a number
+            }};
+        try {
+            await docClient.delete(params).promise();
+            console.log('Transaction deleted.');
+            res.redirect('/portfolio');
+        }
+        catch (error) {
+            console.error('Error deleting transaction:', error);
+            res.status(500).send('Error deleting transaction');
+        };
+    }
+    else {
+    res.redirect('/login');
+    }
+});
+app.post('/createSellTransaction', async (req, res) => {
+    const assetName = (req.body.asset).trim().toLowerCase();
+    const result = await docClient.scan({ TableName: 'crypto-transactions' }).promise();
+    const count = result.Count;
+    if (req.isAuthenticated()) {
+        const params = {
+            TableName: 'crypto-transactions',
+            Item: {
+                id: count + 1,
+                user: req.user.id,
+                asset: assetName,
+                quantity: req.body.quantity,
+                price: req.body.price,
+                date: req.body.date,
+                type: 'Sell'
+            }};
+        try {
+            await docClient.put(params).promise();
+            console.log('Transaction created.');
+            res.redirect('/portfolio');
+        }
+        catch (error) {
+            console.error('Error creating transaction:', error);
+            res.status(500).send('Error creating transaction');
+        }
+    } else {
+    res.redirect('/login');
+    }
+})
+app.post('/createBuy', async (req, res) => {
     const assetName = (req.body.asset || '').trim().toLowerCase();
     const result = await docClient.scan({ TableName: 'crypto-transactions' }).promise();
     const count = result.Count;
@@ -312,4 +362,4 @@ app.get('/profile', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-});
+})
