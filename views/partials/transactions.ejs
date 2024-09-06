@@ -58,18 +58,19 @@
     const portfolioDiv = document.getElementById('portfolio');
     const transactionHistoryBody = document.getElementById('transactionTableBody');
     portfolioDiv.innerHTML = '';
+    let buyOrSell;
     transactionHistoryBody.innerHTML = ''; // Clear previous data
-
     if (data.Items && data.Items.length > 0) {
         data.Items.forEach((item, index) => {  // Added 'index' for alternating row colors
             const row = document.createElement('tr');
+            buyOrSell = item.type === 'Buy' ? 'text-green-500' : 'text-red-500';
             row.classList.add(
                 index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700',
                 'border-b',
                 'dark:border-gray-700'
             );
             row.innerHTML = `
-                <td class="px-6 py-3">${item.type}</td>
+                <td class="px-6 py-3 ${buyOrSell}">${item.type}</td>
                 <td class="px-6 py-3">${item.date}</td>
                 <td class="px-6 py-3">${item.asset}</td>
                 <td class="px-6 py-3">${item.price}</td>
