@@ -1,6 +1,6 @@
 # CryptoPort - Cryptocurrency Market + Portfolio Tracker
-## Contact me @ tomjtait@Outlook.com if you would like me to deploy CryptoPort temporarily to cryptoport.tomtait.dev
-### Screenshots:
+### Contact me @ tomjtait@Outlook.com if you would like me to deploy CryptoPort temporarily to cryptoport.tomtait.dev
+#### Screenshots:
 ![image](https://github.com/user-attachments/assets/227d56fc-d904-45f1-881c-9442f0ed3b87)
 ![image](https://github.com/user-attachments/assets/30a19a7a-02d9-47b1-9005-650d02bf4e87)
 ![image](https://github.com/user-attachments/assets/5e754e51-0b41-413a-89fb-07492faea756)
@@ -8,7 +8,7 @@
 
 
 
-### General features:
+#### General features:
 - Effortlessly monitor and manage your cryptocurrency portfolio
 - Sync Account balance Across multiple Exchanges
 - Support several way to import data
@@ -17,12 +17,12 @@
 - Support all popular coins
 
 
-### Market features:
+#### Market features:
 - Global Data and Chart from CoinCap API v2
 - Features to help you make buy and sell decisions
 
 
-### Profile features:
+#### Profile features:
 - Login/Register
 - Create Portfolio
 - Add coins to your Portfolio
@@ -31,7 +31,7 @@
 - Update user profile
 
 
-### Technology:
+#### Technology:
 - Node
 - Express
 - EJS
