@@ -40,4 +40,7 @@
 - CoinCap API v2
 - Passport
 - Tailwind
-
+- DataTables
+- Axios
+- SweetAlerts
+- Popup-js
