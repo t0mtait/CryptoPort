@@ -8,15 +8,4 @@
     <%- include ('partials/settings') %>
 </body>
 
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const updated = urlParams.get('profileUpdated'); // 'updated' is correctly defined here
-    if (updated === 'true') {  // Use 'updated' instead of 'profileUpdated'
-        Swal.fire({
-            title: 'Profile Updated',
-            icon: 'success',
-            confirmButtonText: 'Ok'
-        });
-    }
 
-</script>
