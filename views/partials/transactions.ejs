@@ -1,7 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.3/popup.min.js"></script>
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <p class="text-4xl m-2 dark:text-white bg-gray-800 rounded-lg p-5 text-center">Transactions</p>
-    <table class="w-full text-sm text-left rtl:text-right text-white">
+    <table id = "transactionsTable" class="w-full text-sm text-left rtl:text-right text-white">
         <thead class="text-xs text-white uppercase bg-gray-700 ">
             <tr>
                 <th scope="col" class="px-6 py-3">
@@ -34,36 +34,40 @@
 </div>
 
 <script>
+    
     async function fetchUserTransactions() {
-        console.log('fetching user transactions');
-        try {
-            const response = await fetch('/userTransactions', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include' // Include cookies for authentication
-            });
+    console.log('fetching user transactions');
+    try {
+        const response = await fetch('/userTransactions', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include' // Include cookies for authentication
+        });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            displayUserTransactions(data);
-        } catch (error) {
-            console.error('Error fetching user assets:', error);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    }
 
-    function displayUserTransactions(data) {
+        const data = await response.json();
+        displayUserTransactions(data);
+    } catch (error) {
+        console.error('Error fetching user assets:', error);
+    }
+}
+
+function displayUserTransactions(data) {
     console.log('displaying user transactions');
     const portfolioDiv = document.getElementById('portfolio');
     const transactionHistoryBody = document.getElementById('transactionTableBody');
     portfolioDiv.innerHTML = '';
     let buyOrSell;
     transactionHistoryBody.innerHTML = ''; // Clear previous data
+
     if (data.Items && data.Items.length > 0) {
+        let formattedPrice;
+        let formattedName;
         data.Items.forEach((item, index) => {  // Added 'index' for alternating row colors
             const row = document.createElement('tr');
             buyOrSell = item.type === 'Buy' ? 'text-green-500' : 'text-red-500';
@@ -72,12 +76,14 @@
                 'border-b',
                 'dark:border-gray-700'
             );
+            formattedPrice = parseFloat(item.price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$' 
+            formattedName = item.asset.charAt(0).toUpperCase() + item.asset.slice(1);
             row.innerHTML = `
                 <td class="px-6 py-3">${item.id}</td>
                 <td class="px-6 py-3 ${buyOrSell}">${item.type}</td>
                 <td class="px-6 py-3">${item.date}</td>
-                <td class="px-6 py-3">${item.asset}</td>
-                <td class="px-6 py-3">${item.price}</td>
+                <td class="px-6 py-3">${formattedName}</td>
+                <td class="px-6 py-3">${formattedPrice}</td>
                 <td class="px-6 py-3">${item.quantity}</td>
                 <td class="px-6 py-3"><button type="button" class="deleteButton focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm p-2 m-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button></td>
             `;
@@ -87,6 +93,7 @@
         portfolioDiv.textContent = 'No transactions found.';
     }
 }
+
 window.addEventListener('DOMContentLoaded', function() {
     fetchUserTransactions();
 });
@@ -107,5 +114,6 @@ document.getElementById('transactionTableBody').addEventListener('click', functi
             </form>`
         });
     }
-})
+});
+
 </script>
