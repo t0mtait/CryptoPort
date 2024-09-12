@@ -1,5 +1,5 @@
 <form action="/createBuy" method="post">
-    <div class="grid gap-6 mb-6 mt-2 p-3 rounded-full md:grid-cols-5 bg-gray-900">
+    <div class="grid gap-6 mb-6 mt-2 p-3 rounded-full md:grid-cols-6 bg-gray-900">
         <div>
             <select name="asset" id="asset" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <% assets.forEach(asset => { %>
@@ -16,7 +16,16 @@
         <div>
             <input type="date" id="date" name="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="<%= new Date().toISOString().split('T')[0] %>" required />
         </div>
-        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm w-full sm:w-auto px-2 py-2.5 text-center">Submit</button>
+        <button type="button" id = "toggleMode" class="text-white bg-orange-500 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm w-full sm:w-auto px-2 py-2.5 text-center">View Transactions</button>
     </div>
 </form>
+
+<script>
+    document.getElementById('toggleMode').addEventListener('click', function() {
+        document.getElementById('transactionHistory').classList.toggle('hidden');
+        document.getElementById('userAssets').classList.toggle('hidden');
+        document.getElementById('toggleMode').textContent = document.getElementById('toggleMode').textContent === 'View Transactions' ? 'View Wallet' : 'View Transactions';
+    });
+</script>
   
