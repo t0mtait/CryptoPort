@@ -79,6 +79,7 @@ app.post('/deleteTransaction', async (req, res) => {
             console.error('Error deleting transaction:', error);
             res.status(500).send('Error deleting transaction');
         };
+        
     }
     else {
     res.redirect('/login');
@@ -318,8 +319,22 @@ app.get('/portfolio', (req, res) => {
         return res.redirect('/login');
     }
     const today = new Date();
-    res.render('portfolio', { user: req.user, nowDate: today });
+    var config = {
+        method: 'get',
+      maxBodyLength: Infinity,
+        url: 'http://api.coincap.io/v2/assets?limit=2000',
+        headers: { }
+      };
+      axios(config)
+.then(function (response) {
+    let data = response.data.data
+    res.render('portfolio', { user: req.user, nowDate: today, assets: data });
+})
+.catch(function (error) {
+  console.log(error);
 });
+    }
+);
 
 app.get('/', (req, res) => {
     if (req.isUnauthenticated()) {
