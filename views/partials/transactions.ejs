@@ -1,11 +1,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.3/popup.min.js"></script>
+
 <div id = "transactionHistory" class="relative overflow-x-auto shadow-md sm:rounded-lg hidden">
     <p class="text-4xl m-2 dark:text-white bg-gray-800 rounded-lg p-5 text-center">Transactions</p>
 
     <table id = "transactionsTable" class="w-full text-sm text-left rtl:text-right text-white">
         <thead class="text-xs text-white uppercase bg-gray-700 ">
             <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-6 py-3 hidden">
                     Tx. ID
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -67,6 +68,7 @@ function displayUserTransactions(data) {
     transactionHistoryBody.innerHTML = ''; // Clear previous data
 
     if (data.Items && data.Items.length > 0) {
+        data.Items.sort((a, b) => new Date(b.date) - new Date(a.date));
         let formattedPrice;
         let formattedName;
         data.Items.forEach((item, index) => {  // Added 'index' for alternating row colors
@@ -80,7 +82,7 @@ function displayUserTransactions(data) {
             formattedPrice = parseFloat(item.price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '$' 
             formattedName = item.asset.charAt(0).toUpperCase() + item.asset.slice(1);
             row.innerHTML = `
-                <td class="px-6 py-3">${item.id}</td>
+                <td class="px-6 py-3 hidden">${item.id}</td>
                 <td class="px-6 py-3 ${buyOrSell}">${item.type}</td>
                 <td class="px-6 py-3">${item.date}</td>
                 <td class="px-6 py-3">${formattedName}</td>
