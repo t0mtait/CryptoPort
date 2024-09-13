@@ -1,66 +1,47 @@
 
 <head>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.1.6/css/dataTables.tailwindcss.css">
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
-
-    <style>
-        /* Change labels and other DataTables text to white */
-        .dataTables_wrapper .dataTables_filter label,
-        .dataTables_wrapper .dataTables_length label,
-        .dataTables_wrapper .dataTables_info,
-        .dataTables_wrapper .dataTables_paginate {
-            color: white;
-        }
-      
-        /* Change the text color of the search input field */
-        .dataTables_wrapper .dataTables_filter input {
-            color: white;
-            background-color: transparent; /* Optional: Change background color */
-            border: 1px solid white; /* Optional: Add a white border */
-        }
-      
-        /* Change the color of the pagination buttons */
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            color: white !important;
-        }
-      
-        /* Optional: Change background color of pagination buttons */
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            background-color: #333; /* Dark background for buttons */
-        }
-      
-        /* Highlight current pagination button */
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background-color: #444;
-            color: white !important;
-        }
-      
-        /* Change the color of the "show entries" dropdown */
-        .dataTables_wrapper .dataTables_length select {
-            color: white;
-            background-color: transparent; /* Optional: Transparent background */
-            border: 1px solid white; /* Optional: White border */
-        }
-      </style>
-      
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script> 
 </head>
-
+<style>
+    #assetsTable_filter {
+        text-align: right;
+        margin: 10px;
+    }
+    #assetsTable_filter label {
+        color: white;
+        font-size: 1rem; 
+    }
+    #assetsTable_filter label input {
+        color: white;
+        font-size: 1rem; 
+        margin-left: 5px;
+    }
+    #assetsTable_filter input {
+        background-color: #1f2937; /* Light background */
+        border: 1px solid white; /* Tailwind blue border */
+        border-radius: 5px; /* Rounded corners */
+        padding: 5px; /* Padding for input */
+        color: white; /* Text color */
+        font-size: 1rem; /* Adjust font size */
+    }
+</style>
 <body>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table id = "assetsTable" class="display w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs uppercase bg-gray-800 text-white">
                 <tr>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-5">
                         MC Rank
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-5">
                         Asset
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-5">
                         Ticker
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-5">
                         Price
                     </th>       
                 </tr>
@@ -72,7 +53,7 @@
                             <%= asset.rank %>
                         </th>
                         <td class="px-6 py-4 text-white">
-                            <%= asset.name.charAt(0).toUpperCase() + asset.name.slice(1);%>
+                            <%= asset.name %>
                         </td>
                         <td class="px-6 py-4 text-white">
                             <%= asset.symbol %>
@@ -93,7 +74,11 @@
     </div>
     <script>
         $(document).ready( function () {
-            $('#assetsTable').DataTable();
+            $('#assetsTable').DataTable(
+                {
+                    paging: false
+                }
+            );
           });
     </script>
 </body>
