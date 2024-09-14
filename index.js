@@ -367,13 +367,20 @@ app.get('/', (req, res) => {
         }
     });
 });
+app.post('/resetPassword', async (req, res) => {
+    return res.redirect('/resetPassword?instructions=sent');
 
+});
 app.get('/profile', (req, res) => {
     if (req.isUnauthenticated()) {
         return res.redirect('/login');
     }
     res.render('profile', { user: req.user });
 });
+
+app.get('/resetPassword', (req, res) => {
+    res.render('resetPassword');
+}); 
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
