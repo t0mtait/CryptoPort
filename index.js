@@ -313,28 +313,39 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
+
+app.get('/summary', (req, res) => {
+    if (req.isUnauthenticated()) {
+        return res.redirect('/login');
+    } else {
+        res.render('summary', { currentPage: 'summary', user: req.user });
+    }
+});
+
 app.get('/portfolio', (req, res) => {
-    // get current date
     if (req.isUnauthenticated()) {
         return res.redirect('/login');
     }
+
     const today = new Date();
     var config = {
         method: 'get',
-      maxBodyLength: Infinity,
+        maxBodyLength: Infinity,
         url: 'http://api.coincap.io/v2/assets?limit=2000',
-        headers: { }
-      };
-      axios(config)
-.then(function (response) {
-    let data = response.data.data
-    res.render('portfolio', { user: req.user, nowDate: today, assets: data });
-})
-.catch(function (error) {
-  console.log(error);
+        headers: {}
+    };
+
+    axios(config)
+        .then(function (response) {
+            let data = response.data.data;
+            res.render('portfolio', { currentPage: 'portfolio', user: req.user, nowDate: today, assets: data });
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500).send("Error fetching assets data.");
+        });
 });
-    }
-);
+
 
 app.get('/', (req, res) => {
     if (req.isUnauthenticated()) {
@@ -360,7 +371,7 @@ app.get('/', (req, res) => {
             const assets = data.data; // Access the 'data' property in the response
 
             // Render the page with assets and user picture
-            res.render('index', { data: assets, user: req.user });
+            res.render('index', { data: assets, user: req.user, currentPage: 'market' });
         } catch (parseError) {
             console.error('Error parsing API response:', parseError);
             res.status(500).send('Error processing API data');
