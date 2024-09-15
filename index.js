@@ -386,7 +386,7 @@ app.get('/profile', (req, res) => {
     if (req.isUnauthenticated()) {
         return res.redirect('/login');
     }
-    res.render('profile', { user: req.user });
+    res.render('profile', { user: req.user, currentPage : 'profile' });
 });
 
 app.get('/resetPassword', (req, res) => {

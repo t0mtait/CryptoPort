@@ -1,30 +1,29 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>[]
+</head>
 
-<form action="/submitProfileChanges" method="post">
-    <div class="grid gap-6 mb-6 md:grid-cols-2">
-        <div>
-            <label for="picture" class="block m-2 text-sm font-medium text-gray-900 dark:text-white">Profile picture</label>
-            <input name = "picture" class="block m-2 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 p-2 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
-        </div>
-        <br>
-        <div class="mb-6">
-            <label for="email" class="block m-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-            <input type="email" name="email" value=
-            "<%= user.email %>"
-            id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm m-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-        </div>
-        <br>
-        <div class="mb-6">
-            <label for="email" class="block m-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
-            <input type="text" name="username" value=
-            "<%= user.username %>"
-            id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm m-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-        </div>
-        <br>
-    <button type="submit" id = "submit" class="m-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit Changes</button>
+<form action="/submitProfileChanges" method="post" class="flex flex-col items-center mb-3">
+    <div class="mb-4 w-full md:w-1/2">
+        <label for="email" class="block m-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
+        <input type="email" name="email" value="<%= user.email %>" id="email" 
+               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm m-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+               required />
+    </div>
+    <div class="mb-4 w-full md:w-1/2">
+        <label for="username" class="block m-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+        <input type="text" name="username" value="<%= user.username %>" id="username" 
+               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm m-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+               required />
+    </div>
+    <div class="mb-4 w-full md:w-1/2">
+        <button type="submit" id="submit" 
+                class="w-full m-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            Submit Changes
+        </button>
+    </div>
 </form>
+
+
 
 <script>
     document.getElementById('submit').addEventListener('click', function() {
