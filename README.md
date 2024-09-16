@@ -1,5 +1,6 @@
 # CryptoPort - Cryptocurrency Market + Portfolio Tracker
 ### Deployment Status: :white_check_mark: https://www.cryptoport.tomtait.dev
+### Note: CryptoPort is IN DEVELOPMENT and may include bugs.
 #### Screenshots:
 ![image](https://github.com/user-attachments/assets/b5488502-d1dd-4623-84ee-387e1c7b4ff0)
 ![image](https://github.com/user-attachments/assets/f0748480-b1de-4eb2-9b24-066f30ae23e8)
