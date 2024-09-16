@@ -1,5 +1,5 @@
 # CryptoPort - Cryptocurrency Market + Portfolio Tracker
-### Deployment Status::white_check_mark: DEPLOYED
+### Deployment Status: :white_check_mark: DEPLOYED
 #### Screenshots:
 ![image](https://github.com/user-attachments/assets/227d56fc-d904-45f1-881c-9442f0ed3b87)
 ![image](https://github.com/user-attachments/assets/30a19a7a-02d9-47b1-9005-650d02bf4e87)
