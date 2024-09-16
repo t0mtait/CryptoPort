@@ -1,15 +1,10 @@
 # CryptoPort - Cryptocurrency Market + Portfolio Tracker
 ### Deployment Status: :white_check_mark: DEPLOYED
 #### Screenshots:
-![image](https://github.com/user-attachments/assets/227d56fc-d904-45f1-881c-9442f0ed3b87)
-![image](https://github.com/user-attachments/assets/30a19a7a-02d9-47b1-9005-650d02bf4e87)
-![image](https://github.com/user-attachments/assets/5e754e51-0b41-413a-89fb-07492faea756)
-<img width="1358" alt="image" src="https://github.com/user-attachments/assets/40f459f7-11e5-4818-8507-4d112dcab9db">
-
-<img width="1358" alt="image" src="https://github.com/user-attachments/assets/d36284b4-65cf-42ac-9f85-1184afcd4a3f">
-
-
-
+![image](https://github.com/user-attachments/assets/b5488502-d1dd-4623-84ee-387e1c7b4ff0)
+![image](https://github.com/user-attachments/assets/f0748480-b1de-4eb2-9b24-066f30ae23e8)
+![image](https://github.com/user-attachments/assets/a2f4d5dd-63b4-43c0-8eb1-284db602af8b)
+![image](https://github.com/user-attachments/assets/b51d0d3c-d3f4-469c-a7d0-2888717826ae)
 
 #### General features:
 - Effortlessly monitor and manage your cryptocurrency portfolio
